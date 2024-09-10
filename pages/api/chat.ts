@@ -13,19 +13,11 @@ const handler = async (req: Request): Promise<Response> => {
     };
     console.log("Received messages:", messages);
 
-    const charLimit = 100000; // Claude 3 Sonnet has a much higher context limit
-    let charCount = 0;
-    let messagesToSend = [];
+    // Ensure the first message is from the user
+    const filteredMessages = messages.filter(msg => msg.role !== 'system');
+    const messagesToSend = filteredMessages[0].role === 'user' ? filteredMessages : filteredMessages.slice(1);
 
-    for (let i = 0; i < messages.length; i++) {
-      const message = messages[i];
-      if (charCount + message.content.length > charLimit) {
-        break;
-      }
-      charCount += message.content.length;
-      messagesToSend.push(message);
-    }
-
+    console.log("Calling ClaudeStream with messages:", messagesToSend);
     const stream = await ClaudeStream(messagesToSend);
     console.log("Stream received from ClaudeStream");
 
