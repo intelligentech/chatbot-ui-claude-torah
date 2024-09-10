@@ -17,10 +17,10 @@ export default function Home() {
 
   const handleSend = async (message: Message) => {
     const updatedMessages = [...messages, message];
-  
+
     setMessages(updatedMessages);
     setLoading(true);
-  
+
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -31,27 +31,27 @@ export default function Home() {
           messages: updatedMessages
         })
       });
-  
+
       if (!response.ok) {
         throw new Error(response.statusText);
       }
-  
+
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
-  
+
       if (!reader) {
         throw new Error("Failed to get response reader");
       }
-  
+
       let accumulatedContent = "";
-  
+
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-  
+
         const chunk = decoder.decode(value);
         const lines = chunk.split('\n').filter(line => line.trim() !== '');
-  
+
         for (const line of lines) {
           try {
             const parsed = JSON.parse(line);
@@ -83,59 +83,6 @@ export default function Home() {
       console.error("Error in handleSend:", error);
     } finally {
       setLoading(false);
-    }
-  };
-
-    if (!response.ok) {
-      setLoading(false);
-      throw new Error(response.statusText);
-    }
-
-    const data = response.body;
-
-    if (!data) {
-      return;
-    }
-
-    setLoading(false);
-
-    const reader = data.getReader();
-    const decoder = new TextDecoder();
-    let done = false;
-    let isFirst = true;
-
-    while (!done) {
-      const { value, done: doneReading } = await reader.read();
-      done = doneReading;
-      const chunkValue = decoder.decode(value);
-
-      try {
-        const jsonChunk = JSON.parse(chunkValue);
-        if (jsonChunk.type === 'content_block_delta' && jsonChunk.delta?.text) {
-          const text = jsonChunk.delta.text;
-          if (isFirst) {
-            isFirst = false;
-            setMessages((messages) => [
-              ...messages,
-              {
-                role: "assistant",
-                content: text
-              }
-            ]);
-          } else {
-            setMessages((messages) => {
-              const lastMessage = messages[messages.length - 1];
-              const updatedMessage = {
-                ...lastMessage,
-                content: lastMessage.content + text
-              };
-              return [...messages.slice(0, -1), updatedMessage];
-            });
-          }
-        }
-      } catch (e) {
-        console.error("Error parsing chunk:", e);
-      }
     }
   };
 
