@@ -25,8 +25,9 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const stream = await ClaudeStream(messagesToSend);
-
-    return new Response(stream);
+    return new Response(stream, {
+      headers: { 'Content-Type': 'text/event-stream' }
+    });
   } catch (error) {
     console.error(error);
     return new Response("Error", { status: 500 });

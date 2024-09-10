@@ -36,48 +36,37 @@ export default function Home() {
         throw new Error(response.statusText);
       }
 
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-
-      if (!reader) {
-        throw new Error("Failed to get response reader");
+      const data = response.body;
+      if (!data) {
+        return;
       }
 
-      let accumulatedContent = "";
+      const reader = data.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
+      let accumulatedResponse = "";
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n').filter(line => line.trim() !== '');
-
-        for (const line of lines) {
-          try {
-            const parsed = JSON.parse(line);
-            if (parsed.type === 'content_block_start' || parsed.type === 'content_block_delta') {
-              if (parsed.delta?.text) {
-                accumulatedContent += parsed.delta.text;
-                setMessages(prevMessages => {
-                  const lastMessage = prevMessages[prevMessages.length - 1];
-                  if (lastMessage.role === 'assistant') {
-                    return [
-                      ...prevMessages.slice(0, -1),
-                      { ...lastMessage, content: accumulatedContent }
-                    ];
-                  } else {
-                    return [
-                      ...prevMessages,
-                      { role: 'assistant', content: accumulatedContent }
-                    ];
-                  }
-                });
-              }
-            }
-          } catch (e) {
-            console.error("Error parsing chunk:", e);
+      while (!done) {
+        const { value, done: doneReading } = await reader.read();
+        done = doneReading;
+        const chunkValue = decoder.decode(value);
+        
+        accumulatedResponse += chunkValue;
+        
+        setMessages(prevMessages => {
+          const lastMessage = prevMessages[prevMessages.length - 1];
+          if (lastMessage.role === 'assistant') {
+            return [
+              ...prevMessages.slice(0, -1),
+              { ...lastMessage, content: accumulatedResponse }
+            ];
+          } else {
+            return [
+              ...prevMessages,
+              { role: 'assistant', content: accumulatedResponse }
+            ];
           }
-        }
+        });
       }
     } catch (error) {
       console.error("Error in handleSend:", error);
