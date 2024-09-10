@@ -1,5 +1,5 @@
-export enum OpenAIModel {
-  DAVINCI_TURBO = "gpt-3.5-turbo"
+export enum AnthropicModel {
+  CLAUDE_3_SONNET = "claude-3-sonnet-20240229"
 }
 
 export interface Message {
@@ -7,4 +7,4 @@ export interface Message {
   content: string;
 }
 
-export type Role = "assistant" | "user";
+export type Role = "assistant" | "user" | "system";
