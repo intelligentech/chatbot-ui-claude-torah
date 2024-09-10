@@ -21,66 +21,68 @@ export default function Home() {
     setMessages(updatedMessages);
     setLoading(true);
 
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        messages: updatedMessages
-      })
-    });
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          messages: updatedMessages
+        })
+      });
 
-    if (!response.ok) {
-      setLoading(false);
-      throw new Error(response.statusText);
-    }
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
 
-    const data = response.body;
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
 
-    if (!data) {
-      return;
-    }
+      if (!reader) {
+        throw new Error("Failed to get response reader");
+      }
 
-    setLoading(false);
+      let accumulatedContent = "";
 
-    const reader = data.getReader();
-    const decoder = new TextDecoder();
-    let done = false;
-    let isFirst = true;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
 
-    while (!done) {
-      const { value, done: doneReading } = await reader.read();
-      done = doneReading;
-      const chunkValue = decoder.decode(value);
+        const chunk = decoder.decode(value);
+        const lines = chunk.split('\n').filter(line => line.trim() !== '');
 
-      try {
-        const jsonChunk = JSON.parse(chunkValue);
-        if (jsonChunk.type === 'content_block_delta' && jsonChunk.delta?.text) {
-          const text = jsonChunk.delta.text;
-          if (isFirst) {
-            isFirst = false;
-            setMessages((messages) => [
-              ...messages,
-              {
-                role: "assistant",
-                content: text
+        for (const line of lines) {
+          try {
+            const parsed = JSON.parse(line);
+            if (parsed.type === 'content_block_start' || parsed.type === 'content_block_delta') {
+              if (parsed.delta?.text) {
+                accumulatedContent += parsed.delta.text;
+                setMessages(prevMessages => {
+                  const lastMessage = prevMessages[prevMessages.length - 1];
+                  if (lastMessage.role === 'assistant') {
+                    return [
+                      ...prevMessages.slice(0, -1),
+                      { ...lastMessage, content: accumulatedContent }
+                    ];
+                  } else {
+                    return [
+                      ...prevMessages,
+                      { role: 'assistant', content: accumulatedContent }
+                    ];
+                  }
+                });
               }
-            ]);
-          } else {
-            setMessages((messages) => {
-              const lastMessage = messages[messages.length - 1];
-              const updatedMessage = {
-                ...lastMessage,
-                content: lastMessage.content + text
-              };
-              return [...messages.slice(0, -1), updatedMessage];
-            });
+            }
+          } catch (e) {
+            console.error("Error parsing chunk:", e);
           }
         }
-      } catch (e) {
-        console.error("Error parsing chunk:", e);
       }
+    } catch (error) {
+      console.error("Error in handleSend:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
