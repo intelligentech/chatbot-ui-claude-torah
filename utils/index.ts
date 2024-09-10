@@ -46,14 +46,14 @@ export const ClaudeStream = async (messages: Message[]) => {
       },
       method: "POST",
       body: JSON.stringify({
-        model: "claude-3-sonnet-20240229",
+        model: "claude-3-5-sonnet-20240620",
         system: systemMessage,
         messages: messages.map(msg => ({
           role: msg.role === 'user' ? 'user' : 'assistant',
           content: msg.content
         })),
         max_tokens: 3600,
-        temperature: 0.90,
+        temperature: 1.00,
         stream: true
       })
     });
