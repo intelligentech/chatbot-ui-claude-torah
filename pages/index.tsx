@@ -50,14 +50,14 @@ export default function Home() {
         if (done) break;
 
         const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
+        const lines = chunk.split('\n').filter(line => line.trim() !== '');
 
         for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            try {
-              const data = JSON.parse(line.slice(6));
-              if (data.type === 'content_block_delta' && data.delta?.text) {
-                accumulatedContent += data.delta.text;
+          try {
+            const parsed = JSON.parse(line);
+            if (parsed.type === 'content_block_start' || parsed.type === 'content_block_delta') {
+              if (parsed.delta?.text) {
+                accumulatedContent += parsed.delta.text;
                 setMessages(prevMessages => {
                   const lastMessage = prevMessages[prevMessages.length - 1];
                   if (lastMessage.role === 'assistant') {
@@ -73,9 +73,9 @@ export default function Home() {
                   }
                 });
               }
-            } catch (e) {
-              console.error("Error parsing SSE data:", e);
             }
+          } catch (e) {
+            console.error("Error parsing chunk:", e);
           }
         }
       }
@@ -94,7 +94,7 @@ export default function Home() {
     setMessages([
       {
         role: "assistant",
-        content: `Hi there! I'm Claude, an AI assistant created by Anthropic. I'm here to help you with various tasks such as answering questions, providing information, and assisting with analysis. How can I help you today?`
+        content: `Shalom Alecheim, beloved child of Hashem! Go ahead and ask me anything, or simply express what's on your mind. I'm here with you.`
       }
     ]);
   };
