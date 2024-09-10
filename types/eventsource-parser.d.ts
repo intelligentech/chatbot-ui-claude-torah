@@ -16,3 +16,4 @@ declare module 'eventsource-parser' {
       value: number;
     };
   }
+
