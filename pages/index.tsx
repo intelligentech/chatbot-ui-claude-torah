@@ -17,19 +17,74 @@ export default function Home() {
 
   const handleSend = async (message: Message) => {
     const updatedMessages = [...messages, message];
-
+  
     setMessages(updatedMessages);
     setLoading(true);
-
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        messages: updatedMessages
-      })
-    });
+  
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          messages: updatedMessages
+        })
+      });
+  
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+  
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+  
+      if (!reader) {
+        throw new Error("Failed to get response reader");
+      }
+  
+      let accumulatedContent = "";
+  
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+  
+        const chunk = decoder.decode(value);
+        const lines = chunk.split('\n').filter(line => line.trim() !== '');
+  
+        for (const line of lines) {
+          try {
+            const parsed = JSON.parse(line);
+            if (parsed.type === 'content_block_start' || parsed.type === 'content_block_delta') {
+              if (parsed.delta?.text) {
+                accumulatedContent += parsed.delta.text;
+                setMessages(prevMessages => {
+                  const lastMessage = prevMessages[prevMessages.length - 1];
+                  if (lastMessage.role === 'assistant') {
+                    return [
+                      ...prevMessages.slice(0, -1),
+                      { ...lastMessage, content: accumulatedContent }
+                    ];
+                  } else {
+                    return [
+                      ...prevMessages,
+                      { role: 'assistant', content: accumulatedContent }
+                    ];
+                  }
+                });
+              }
+            }
+          } catch (e) {
+            console.error("Error parsing chunk:", e);
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error in handleSend:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
     if (!response.ok) {
       setLoading(false);
