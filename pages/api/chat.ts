@@ -1,5 +1,5 @@
 import { Message } from "@/types";
-import { OpenAIStream } from "@/utils";
+import { ClaudeStream } from "@/utils";
 
 export const config = {
   runtime: "edge"
@@ -11,7 +11,7 @@ const handler = async (req: Request): Promise<Response> => {
       messages: Message[];
     };
 
-    const charLimit = 12000;
+    const charLimit = 100000; // Claude 3 Sonnet has a much higher context limit
     let charCount = 0;
     let messagesToSend = [];
 
@@ -24,7 +24,7 @@ const handler = async (req: Request): Promise<Response> => {
       messagesToSend.push(message);
     }
 
-    const stream = await OpenAIStream(messagesToSend);
+    const stream = await ClaudeStream(messagesToSend);
 
     return new Response(stream);
   } catch (error) {
