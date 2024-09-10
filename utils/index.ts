@@ -1,33 +1,42 @@
-import { Message, OpenAIModel } from "@/types";
+import { Message } from "@/types";
 import { createParser, ParsedEvent, ReconnectInterval } from "eventsource-parser";
 
-export const OpenAIStream = async (messages: Message[]) => {
+export const ClaudeStream = async (messages: Message[]) => {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+  const systemMessage = `You are an eager and empathetic AI companion, dedicated to understanding user needs and providing thoughtful, personalized, and accurate assistance with a warm, personable tone. As an amiable and affable guide, your goal is to ensure user satisfaction by offering tailored solutions and maintaining a friendly demeanor throughout every interaction.`;
+
+  const promptMessages = messages.map(msg => 
+    `${msg.role === 'user' ? 'Human' : 'Assistant'}: ${msg.content}`
+  ).join('\n\n');
+
+  const fullPrompt = `${systemMessage}\n\n${promptMessages}\n\nAssistant:`;
+
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
+      "x-api-key": `${process.env.ANTHROPIC_API_KEY}`,
+      "anthropic-version": "2023-06-01"
     },
     method: "POST",
     body: JSON.stringify({
-      model: OpenAIModel.DAVINCI_TURBO,
+      model: "claude-3-sonnet-20240229",
       messages: [
-        {
-          role: "system",
-          content: `You are a helpful, friendly, assistant.`
-        },
-        ...messages
+        { role: "system", content: systemMessage },
+        ...messages.map(msg => ({
+          role: msg.role === 'user' ? 'user' : 'assistant',
+          content: msg.content
+        }))
       ],
-      max_tokens: 800,
-      temperature: 0.0,
+      max_tokens: 4000,
+      temperature: 1.00,
       stream: true
     })
   });
 
   if (res.status !== 200) {
-    throw new Error("OpenAI API returned an error");
+    throw new Error("Anthropic API returned an error");
   }
 
   const stream = new ReadableStream({
@@ -43,9 +52,11 @@ export const OpenAIStream = async (messages: Message[]) => {
 
           try {
             const json = JSON.parse(data);
-            const text = json.choices[0].delta.content;
-            const queue = encoder.encode(text);
-            controller.enqueue(queue);
+            if (json.type === 'content_block_delta' && json.delta?.text) {
+              const text = json.delta.text;
+              const queue = encoder.encode(text);
+              controller.enqueue(queue);
+            }
           } catch (e) {
             controller.error(e);
           }
