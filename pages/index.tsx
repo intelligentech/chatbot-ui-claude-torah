@@ -54,24 +54,32 @@ export default function Home() {
       done = doneReading;
       const chunkValue = decoder.decode(value);
 
-      if (isFirst) {
-        isFirst = false;
-        setMessages((messages) => [
-          ...messages,
-          {
-            role: "assistant",
-            content: chunkValue
+      try {
+        const jsonChunk = JSON.parse(chunkValue);
+        if (jsonChunk.type === 'content_block_delta' && jsonChunk.delta?.text) {
+          const text = jsonChunk.delta.text;
+          if (isFirst) {
+            isFirst = false;
+            setMessages((messages) => [
+              ...messages,
+              {
+                role: "assistant",
+                content: text
+              }
+            ]);
+          } else {
+            setMessages((messages) => {
+              const lastMessage = messages[messages.length - 1];
+              const updatedMessage = {
+                ...lastMessage,
+                content: lastMessage.content + text
+              };
+              return [...messages.slice(0, -1), updatedMessage];
+            });
           }
-        ]);
-      } else {
-        setMessages((messages) => {
-          const lastMessage = messages[messages.length - 1];
-          const updatedMessage = {
-            ...lastMessage,
-            content: lastMessage.content + chunkValue
-          };
-          return [...messages.slice(0, -1), updatedMessage];
-        });
+        }
+      } catch (e) {
+        console.error("Error parsing chunk:", e);
       }
     }
   };
@@ -80,7 +88,7 @@ export default function Home() {
     setMessages([
       {
         role: "assistant",
-        content: `Hi there! I'm Chatbot UI, an AI assistant. I can help you with things like answering questions, providing information, and helping with tasks. How can I help you?`
+        content: `Hi there! I'm Claude, an AI assistant created by Anthropic. I'm here to help you with various tasks such as answering questions, providing information, and assisting with analysis. How can I help you today?`
       }
     ]);
   };
@@ -93,7 +101,7 @@ export default function Home() {
     setMessages([
       {
         role: "assistant",
-        content: `Hi there! I'm Chatbot UI, an AI assistant. I can help you with things like answering questions, providing information, and helping with tasks. How can I help you?`
+        content: `Hi there! I'm Claude, an AI assistant created by Anthropic. I'm here to help you with various tasks such as answering questions, providing information, and assisting with analysis. How can I help you today?`
       }
     ]);
   }, []);
@@ -101,10 +109,10 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Chatbot UI</title>
+        <title>Claude Chatbot</title>
         <meta
           name="description"
-          content="A simple chatbot starter kit for OpenAI's chat model using Next.js, TypeScript, and Tailwind CSS."
+          content="A simple chatbot using Anthropic's Claude 3.5 Sonnet model with Next.js, TypeScript, and Tailwind CSS."
         />
         <meta
           name="viewport"
