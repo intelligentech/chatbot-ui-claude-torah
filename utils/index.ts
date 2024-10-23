@@ -46,7 +46,7 @@ export const ClaudeStream = async (messages: Message[]) => {
       },
       method: "POST",
       body: JSON.stringify({
-        model: "claude-3-5-sonnet-20240620",
+        model: "claude-3-5-sonnet-20241022",
         system: systemMessage,
         messages: messages.map(msg => ({
           role: msg.role === 'user' ? 'user' : 'assistant',
