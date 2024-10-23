@@ -54,7 +54,7 @@ export const ClaudeStream = async (messages: Message[]) => {
         })),
         max_tokens: 3600,
         temperature: 0.95,
-        stream: true
+        stream: false
       })
     });
 
