@@ -44,13 +44,15 @@ export default function Home() {
       }
 
       let accumulatedContent = "";
+      let partialLine = "";
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
         const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split('\n');
+        const lines = (partialLine + chunk).split('\n');
+        partialLine = lines.pop() || "";
 
         for (const line of lines) {
           if (line.startsWith('data: ')) {
@@ -58,27 +60,55 @@ export default function Home() {
               const data = JSON.parse(line.slice(6));
               if (data.type === 'content_block_delta' && data.delta?.text) {
                 accumulatedContent += data.delta.text;
-                setMessages(prevMessages => {
-                  const lastMessage = prevMessages[prevMessages.length - 1];
-                  if (lastMessage.role === 'assistant') {
-                    return [
-                      ...prevMessages.slice(0, -1),
-                      { ...lastMessage, content: accumulatedContent }
-                    ];
-                  } else {
-                    return [
-                      ...prevMessages,
-                      { role: 'assistant', content: accumulatedContent }
-                    ];
-                  }
-                });
               }
             } catch (e) {
               console.error("Error parsing SSE data:", e);
             }
           }
         }
+
+        setMessages(prevMessages => {
+          const lastMessage = prevMessages[prevMessages.length - 1];
+          if (lastMessage.role === 'assistant') {
+            return [
+              ...prevMessages.slice(0, -1),
+              { ...lastMessage, content: accumulatedContent }
+            ];
+          } else {
+            return [
+              ...prevMessages,
+              { role: 'assistant', content: accumulatedContent }
+            ];
+          }
+        });
       }
+
+      if (partialLine) {
+        try {
+          const data = JSON.parse(partialLine.slice(6));
+          if (data.type === 'content_block_delta' && data.delta?.text) {
+            accumulatedContent += data.delta.text;
+          }
+        } catch (e) {
+          console.error("Error parsing final SSE data:", e);
+        }
+      }
+
+      setMessages(prevMessages => {
+        const lastMessage = prevMessages[prevMessages.length - 1];
+        if (lastMessage.role === 'assistant') {
+          return [
+            ...prevMessages.slice(0, -1),
+            { ...lastMessage, content: accumulatedContent }
+          ];
+        } else {
+          return [
+            ...prevMessages,
+            { role: 'assistant', content: accumulatedContent }
+          ];
+        }
+      });
+
     } catch (error) {
       console.error("Error in handleSend:", error);
       if (error instanceof Error) {
