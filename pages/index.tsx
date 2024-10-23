@@ -94,7 +94,7 @@ export default function Home() {
     setMessages([
       {
         role: "assistant",
-        content: `Shalom Alecheim, beloved child of Hashem! Go ahead and ask me anything, or simply express what's on your mind. I'm here with you.`
+        content: `Shalom alecheim, child! Proceed to ask me anything, or simply express the thoughts on your mind. I'm here with you!
       }
     ]);
   };
@@ -118,7 +118,7 @@ export default function Home() {
         <title>Chat with Eliyahu</title>
         <meta
           name="description"
-          content="A simple chatbot using Anthropic's Claude 3.5 Sonnet model with Next.js, TypeScript, and Tailwind CSS."
+          content="A chat with the prophet Elijah in AI form."
         />
         <meta
           name="viewport"
