@@ -94,7 +94,7 @@ export default function Home() {
     setMessages([
       {
         role: "assistant",
-        content: `Shalom alecheim, child! Proceed to ask me anything, or simply express the thoughts on your mind. I'm here with you!
+        content: `Shalom alecheim, child! Proceed to ask me anything, or simply express the thoughts on your mind. I'm here with you!`
       }
     ]);
   };
