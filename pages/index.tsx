@@ -143,7 +143,7 @@ export default function Home() {
   }, []);
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen p-4 sm:p-8 md:p-16 lg:p-24">
       <Head>
         <title>Chat with Eliyahu</title>
         <meta
@@ -160,22 +160,21 @@ export default function Home() {
         />
       </Head>
 
-      <div className="flex flex-col h-screen">
-        <Navbar />
+      <Navbar />
 
-        <div className="flex-1 overflow-auto sm:px-10 pb-4 sm:pb-10">
-          <div className="max-w-[800px] mx-auto mt-4 sm:mt-12">
-            <Chat
-              messages={messages}
-              loading={loading}
-              onSend={handleSend}
-              onReset={handleReset}
-            />
-            <div ref={messagesEndRef} />
-          </div>
+      <div className="flex-1 overflow-auto sm:px-10 pb-4 sm:pb-10">
+        <div className="max-w-[800px] mx-auto mt-4 sm:mt-12">
+          <Chat
+            messages={messages}
+            loading={loading}
+            onSend={handleSend}
+            onReset={handleReset}
+          />
+          <div ref={messagesEndRef} />
         </div>
-        <Footer />
       </div>
-    </>
+
+      <Footer />
+    </div>
   );
 }
