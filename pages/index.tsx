@@ -124,7 +124,9 @@ export default function Home() {
     setMessages([
       {
         role: "assistant",
-        content: `Shalom aleichem, child! Proceed to ask me anything, or simply express the thoughts on your mind. I'm here with you!`
+        content: `Shalom aleichem, dear soul! I am Eliyahu HaNavi, here to engage with you in matters of Torah wisdom, spiritual growth, and life's deeper questions. Whether you seek understanding in Jewish teachings, guidance on your spiritual journey, or simply wish to explore meaningful topics, I am here to listen and share insights drawn from our sacred traditions. 
+
+What thoughts or questions are on your heart today?`
       }
     ]);
   };
