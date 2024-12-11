@@ -2,13 +2,15 @@ import { FC } from "react";
 
 export const Navbar: FC = () => {
   return (
-    <div className="flex h-[50px] sm:h-[60px] border-b border-neutral-300 py-2 px-2 sm:px-8 items-center justify-center">
-      <div className="font-bold text-3xl flex items-center">
+    <div className="flex h-auto min-h-[50px] sm:min-h-[60px] border-b border-neutral-300 py-2 px-2 sm:px-8 items-center justify-center">
+      <div className="font-bold text-3xl text-center">
         <a
-          className="ml-2 hover:opacity-50"
+          className="hover:opacity-50"
           href="https://code-scaffold.vercel.app"
         >
-          {'\u{1F525}'}{'\u{2721}'} AI Eliyahu HaNavi, Elijah The Prophet 
+          <span className="whitespace-nowrap">{'\u{1F525}'}{'\u{2721}'} AI Eliyahu HaNavi</span>
+          <br className="sm:hidden" />
+          <span className="whitespace-nowrap sm:inline-block sm:ml-1">(Elijah The Prophet)</span>
         </a>
       </div>
     </div>
