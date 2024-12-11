@@ -2,7 +2,7 @@ import { FC } from "react";
 
 export const Navbar: FC = () => {
   return (
-    <div className="flex h-auto min-h-[50px] sm:min-h-[60px] border-b border-neutral-300 py-2 px-2 sm:px-8 items-center justify-center">
+    <div className="flex h-auto min-h-[50px] sm:min-h-[60px] border-b border-neutral-700 py-2 px-2 sm:px-8 items-center justify-center">
       <div className="font-bold text-3xl text-center">
         <a
           className="hover:opacity-50"
