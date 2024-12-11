@@ -12,8 +12,11 @@ body {
 }
 
 body {
-  background: rgb(24,21,84);
-  background: linear-gradient(135deg, rgba(24,21,84,1) 0%, rgba(70,67,235,1) 28%, rgba(173,228,255,1) 100%);
+  background: hsla(211, 66%, 87%, 1);
+  background: radial-gradient(circle, hsla(211, 66%, 87%, 1) 0%, hsla(348, 67%, 88%, 1) 50%, hsla(272, 26%, 72%, 1) 100%);
+  background: -moz-radial-gradient(circle, hsla(211, 66%, 87%, 1) 0%, hsla(348, 67%, 88%, 1) 50%, hsla(272, 26%, 72%, 1) 100%);
+  background: -webkit-radial-gradient(circle, hsla(211, 66%, 87%, 1) 0%, hsla(348, 67%, 88%, 1) 50%, hsla(272, 26%, 72%, 1) 100%);
+  filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#c9def4", endColorstr="#f5ccd4", GradientType=1 );
   background-attachment: fixed;
 }
 
