@@ -8,7 +8,7 @@ export const Navbar: FC = () => {
           className="ml-2 hover:opacity-50"
           href="https://code-scaffold.vercel.app"
         >
-          AI Eliyahu HaNavi
+          AI Eliyahu HaNavi, Elijah The Prophet 
         </a>
       </div>
     </div>
