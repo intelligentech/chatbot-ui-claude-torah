@@ -12,7 +12,8 @@ body {
 }
 
 body {
-  background: linear-gradient(135deg, #d2d2d2 0%, #c8c4ac 100%);
+  background: rgb(24,21,84);
+  background: linear-gradient(135deg, rgba(24,21,84,1) 0%, rgba(70,67,235,1) 28%, rgba(173,228,255,1) 100%);
   background-attachment: fixed;
 }
 
