@@ -94,20 +94,11 @@ export default function Home() {
         }
       }
 
-      setMessages(prevMessages => {
-        const lastMessage = prevMessages[prevMessages.length - 1];
-        if (lastMessage.role === 'assistant') {
-          return [
-            ...prevMessages.slice(0, -1),
-            { ...lastMessage, content: accumulatedContent }
-          ];
-        } else {
-          return [
-            ...prevMessages,
-            { role: 'assistant', content: accumulatedContent }
-          ];
-        }
-      });
+      const finalMessages = [
+        ...updatedMessages,
+        { role: 'assistant', content: accumulatedContent }
+      ];
+      await saveChat(finalMessages);
 
     } catch (error) {
       console.error("Error in handleSend:", error);
@@ -145,6 +136,35 @@ What thoughts or questions are on your heart today?`
       }
     ]);
   }, []);
+
+  const saveChat = async (messages: Message[]) => {
+    if (!messages || messages.length === 0) return;
+    
+    try {
+      const response = await fetch('https://aichatlab.co/eliyahuchat1/save-chat.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id: crypto.randomUUID(),
+          timestamp: new Date().toISOString(),
+          messages: messages
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to save chat: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error('Failed to save chat: Server returned error');
+      }
+    } catch (error) {
+      console.error('Error saving chat:', error);
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen p-4 sm:p-8 md:p-16 lg:p-24">
