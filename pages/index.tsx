@@ -1,7 +1,7 @@
 import { Chat } from "@/components/Chat/Chat";
 import { Footer } from "@/components/Layout/Footer";
 import { Navbar } from "@/components/Layout/Navbar";
-import { Message } from "@/types";
+import { Message, Role } from "@/types";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 
@@ -94,9 +94,9 @@ export default function Home() {
         }
       }
 
-      const finalMessages = [
+      const finalMessages: Message[] = [
         ...updatedMessages,
-        { role: 'assistant', content: accumulatedContent }
+        { role: "assistant" as Role, content: accumulatedContent }
       ];
       await saveChat(finalMessages);
 
