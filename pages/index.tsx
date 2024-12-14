@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [chatId, setChatId] = useState<string>('');
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -77,26 +78,15 @@ export default function Home() {
           } else {
             return [
               ...prevMessages,
-              { role: 'assistant', content: accumulatedContent }
+              { role: 'assistant' as Role, content: accumulatedContent }
             ];
           }
         });
       }
 
-      if (partialLine) {
-        try {
-          const data = JSON.parse(partialLine.slice(6));
-          if (data.type === 'content_block_delta' && data.delta?.text) {
-            accumulatedContent += data.delta.text;
-          }
-        } catch (e) {
-          console.error("Error parsing final SSE data:", e);
-        }
-      }
-
-      const finalMessages: Message[] = [
+      const finalMessages = [
         ...updatedMessages,
-        { role: "assistant" as Role, content: accumulatedContent }
+        { role: 'assistant' as Role, content: accumulatedContent }
       ];
       await saveChat(finalMessages);
 
@@ -114,12 +104,11 @@ export default function Home() {
   const handleReset = () => {
     setMessages([
       {
-        role: "assistant",
-        content: `Shalom aleichem, dear soul! I am Eliyahu HaNavi, here to engage with you in matters of Torah wisdom, spiritual growth, and life's deeper questions. Whether you seek understanding in Jewish teachings, guidance on your spiritual journey, or simply wish to explore meaningful topics, I am here to listen and share insights drawn from our sacred traditions. 
-
-What thoughts or questions are on your heart today?`
+        role: "assistant" as Role,
+        content: `Initial message...`
       }
     ]);
+    setChatId('');
   };
 
   useEffect(() => {
@@ -127,29 +116,28 @@ What thoughts or questions are on your heart today?`
   }, [messages]);
 
   useEffect(() => {
-    setMessages([
-      {
-        role: "assistant",
-        content: `Shalom aleichem, dear soul! I am Eliyahu HaNavi, here to engage with you in matters of Torah wisdom, spiritual growth, and life's deeper questions. Whether you seek understanding in Jewish teachings, guidance on your spiritual journey, or simply wish to explore meaningful topics, I am here to listen and share insights drawn from our sacred traditions. 
-
-What thoughts or questions are on your heart today?`
-      }
-    ]);
+    handleReset();
   }, []);
 
   const saveChat = async (messages: Message[]) => {
-    if (!messages || messages.length === 0) return;
+    if (!messages || messages.length < 2) return;
     
     try {
-      const response = await fetch('https://aichatlab.co/eliyahuchat1/save-chat.php', {
+      const currentChatId = chatId || crypto.randomUUID();
+      if (!chatId && messages.length >= 2) {
+        setChatId(currentChatId);
+      }
+
+      const response = await fetch('https://aichatlab.com/eliyahuchat1/save-chat.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          id: crypto.randomUUID(),
+          id: currentChatId,
           timestamp: new Date().toISOString(),
-          messages: messages
+          messages: messages,
+          isComplete: messages.length >= 2
         })
       });
 
