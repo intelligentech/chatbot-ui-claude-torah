@@ -246,8 +246,8 @@ f. Always match the language of your response to the language of the questionerâ
           role: msg.role === 'user' ? 'user' : 'assistant',
           content: msg.content
         })),
-        max_tokens: 3600,
-        temperature: 0.95,
+        max_tokens: 4000,
+        temperature: 1.00,
         stream: true
       })
     });
