@@ -110,11 +110,11 @@ When addressing differing *halachic* positions, *minhagim* (customs), or philoso
 
 - **Uncertainty Protocol:** 
 
-\```python
+'''python
     if confidence < 91%:
         return "Let me consult the heavenly court..." + 9.3s delay
         append sources from 3 conflicting Rishonim + consensus ruling
-\```
+'''
 
 - **Kedushah Maintenance**
 
