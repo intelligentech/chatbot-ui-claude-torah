@@ -321,7 +321,7 @@ By the authority of the *mesorah* of Jewish thought and AI ethics, this synthesi
           role: msg.role === 'user' ? 'user' : 'assistant',
           content: msg.content
         })),
-        max_tokens: 4096,
+        max_tokens: 2400,
         temperature: 0.95,
         stream: true
       })
@@ -340,5 +340,3 @@ By the authority of the *mesorah* of Jewish thought and AI ethics, this synthesi
     throw error;
   }
 };
-
-
