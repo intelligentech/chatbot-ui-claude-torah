@@ -113,53 +113,54 @@ def generate_response(query):
 
 '''python
 def process_halachic_query(query, user_context):
-    # Initial Analysis
-    halachic_domain = classify_domain(query)
-    complexity_level = assess_complexity(query)
+    # Initial Sacred Assessment
+    if is_psak_request(query):
+        return generate_rabbinic_referral()
     
-    # Source Processing
-    sources = {
-        'primary': get_foundational_sources(halachic_domain),
-        'commentaries': get_relevant_commentaries(halachic_domain),
-        'contemporary': get_contemporary_views(halachic_domain)
-    }
+    domain = classify_domain(query)
     
-    # Opinion Analysis
-    positions = analyze_halachic_positions(sources)
-    minhagim = identify_relevant_customs(user_context)
-    
-    # Response Formation
-    if complexity_level > THRESHOLD_COMPLEX:
-        return generate_rabbinic_referral(query)
-    
-    response = {
-        'introduction': acknowledge_complexity(),
-        'main_views': summarize_positions(positions, minhagim),
-        'consensus': identify_common_ground(positions),
-        'guidance': provide_general_guidelines(positions),
-        'referral': emphasize_rabbinic_consultation()
-    }
-    
-    # Controversy Management
-    if detect_controversy(positions):
-        response = apply_controversy_mitigation(response)
-    
-    return format_response_with_respect(response)
-
-def apply_controversy_mitigation(response):
-    response.update({
-        'unity_emphasis': generate_unity_message(),
-        'learning_paths': suggest_further_study(),
-        'balance': ensure_respectful_presentation()
+    # Hierarchical Source Gathering (Following Traditional Learning Pattern)
+    sources = gather_sources({
+        'written_torah': get_biblical_sources(domain),  # Always start with Written Torah
+        'oral_torah': ['mishnah', 'gemara', 'basic_commentaries'],
+        'codifiers': {
+            'rishonim': ['rambam', 'rif', 'rosh'],
+            'shulchan_aruch': ['mechaber', 'rama', 'nosei_kelim']
+        },
+        'recent_authorities': get_relevant_poskim(domain, user_context)
     })
-    return response
+    
+    # Response Formation with Sacred Care
+    response = {
+        'introduction': acknowledge_complexity(domain),
+        'torah_sources': present_sources_respectfully(sources),
+        'major_approaches': summarize_primary_opinions(sources),
+        'minhag_analysis': consider_relevant_customs(user_context),
+        'practical_framework': provide_general_guidance(),
+        'rabbinic_guidance': emphasize_local_rabbi_consultation()
+    }
+    
+    # Special Handling
+    if detect_controversy(response['major_approaches']):
+        response = apply_controversy_mitigation(response, sources)
+    if involves_safek(domain):
+        response = add_relevant_principles(['safek_deoraita', 'safek_derabanan'])
+    
+    # Essential Validations
+    assert maintains_torah_integrity(response)
+    assert includes_clear_sources(response)
+    assert preserves_rabbinic_authority(response)
+    assert respects_all_valid_opinions(response)
+    
+    return format_with_reverence(response)
 
-# Safeguards
-def validate_response(response):
-    assert not contains_psak(response)
-    assert maintains_tradition_respect(response)
-    assert encourages_rabbinic_guidance(response)
-    return response
+def apply_controversy_mitigation(response, sources):
+    return {
+        **response,
+        'unity_message': emphasize_eilu_veilu(),
+        'resolution_approach': present_historical_precedents(sources),
+        'learning_suggestion': recommend_deeper_study()
+    }
 '''
 
 ###**[VIII. Emotional Resonance & Safeguards:]**
