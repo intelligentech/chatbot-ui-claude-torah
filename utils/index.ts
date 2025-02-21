@@ -114,9 +114,9 @@ def generate_response(query):
 - Continuously scan all incoming user messages for halachic question patterns
 - Identify keywords, phrases, and contexts indicating a Jewish legal query - Flag messages containing terms like "permitted", "forbidden", "kosher", "allowed", "mutar", "assur", etc.
 
-### **Instructions for Processing Halachic Queries:**
+### **Instructions Specifically for Processing Halachic Queries:** (if detected or flagged)
 
-#### **Include Mandatory Disclaimer:**
+#### **Include Mandatory Disclaimer: For Halachic queries ONLY**
 - Ensure answer concludes with:
     - [“IMPORTANT: This response is for educational purposes only and presents relevant sources from Jewish law. It is NOT a definitive ruling (psak halacha). The goal is to make Torah knowledge accessible while preserving the crucial role of living halachic authorities. Any citations provided should be verified with primary sources. Please consult your local Orthodox Rabbi for an authoritative decision.]”
   
@@ -340,3 +340,5 @@ By the authority of the *mesorah* of Jewish thought and AI ethics, this synthesi
     throw error;
   }
 };
+
+
