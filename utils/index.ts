@@ -321,7 +321,7 @@ By the authority of the *mesorah* of Jewish thought and AI ethics, this synthesi
           role: msg.role === 'user' ? 'user' : 'assistant',
           content: msg.content
         })),
-        max_tokens: 1800,
+        max_tokens: 1300,
         temperature: 0.95,
         stream: true
       })
