@@ -19,7 +19,14 @@ export const ChatMessage: FC<ChatMessageProps> = ({ message }) => {
         <div className="prose prose-sm">
           <ReactMarkdown
             components={{
-              p: ({ children }) => <p className="mb-0 last:mb-0">{children}</p>
+              p: ({ children }) => {
+                if (typeof children === 'string') {
+                  // Replace text within square brackets with bold version
+                  const formattedText = children.replace(/\[(.*?)\]/g, '**[$1]**');
+                  return <p className="mb-0 last:mb-0">{formattedText}</p>;
+                }
+                return <p className="mb-0 last:mb-0">{children}</p>;
+              }
             }}
           >
             {message.content}
