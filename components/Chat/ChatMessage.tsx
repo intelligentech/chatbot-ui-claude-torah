@@ -17,7 +17,13 @@ export const ChatMessage: FC<ChatMessageProps> = ({ message }) => {
         } rounded-2xl px-3 py-2 max-w-[75%] whitespace-pre-wrap`}
         style={{ overflowWrap: "anywhere" }}
       >
-        <ReactMarkdown>{message.content}</ReactMarkdown>
+        <ReactMarkdown
+          components={{
+            p: ({ children }) => <p className="w-full m-0">{children}</p>
+          }}
+        >
+          {message.content}
+        </ReactMarkdown>
       </div>
     </div>
   );
