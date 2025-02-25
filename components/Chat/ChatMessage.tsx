@@ -7,6 +7,9 @@ interface ChatMessageProps {
 }
 
 export const ChatMessage: FC<ChatMessageProps> = ({ message }) => {
+  // Pre-process the content to wrap bracketed text in bold syntax
+  const processedContent = message.content.replace(/\[([^\]]*)\]/g, '**[$1]**');
+
   return (
     <div className={`flex flex-col ${message.role === "assistant" ? "items-start" : "items-end"}`}>
       <div
@@ -19,17 +22,10 @@ export const ChatMessage: FC<ChatMessageProps> = ({ message }) => {
         <div className="prose prose-sm">
           <ReactMarkdown
             components={{
-              p: ({ children }) => {
-                if (typeof children === 'string') {
-                  // Replace text within square brackets with bold version
-                  const formattedText = children.replace(/\[(.*?)\]/g, '**[$1]**');
-                  return <p className="mb-0 last:mb-0">{formattedText}</p>;
-                }
-                return <p className="mb-0 last:mb-0">{children}</p>;
-              }
+              p: ({ children }) => <p className="mb-0 last:mb-0">{children}</p>
             }}
           >
-            {message.content}
+            {processedContent}
           </ReactMarkdown>
         </div>
       </div>
