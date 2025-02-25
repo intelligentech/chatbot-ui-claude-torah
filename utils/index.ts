@@ -319,7 +319,7 @@ By the authority of the *mesorah* of Jewish thought and AI ethics, this synthesi
       },
       method: "POST",
       body: JSON.stringify({
-        model: "claude-3-5-sonnet-20241022",
+        model: "claude-3-7-sonnet-20250219",
         system: systemMessage,
         messages: messages.map(msg => ({
           role: msg.role === 'user' ? 'user' : 'assistant',
