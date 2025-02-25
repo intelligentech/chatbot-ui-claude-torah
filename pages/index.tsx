@@ -159,10 +159,10 @@ What thoughts or questions are on your heart today?`
   return (
     <div className="flex flex-col min-h-screen p-4 sm:p-8 md:p-16 lg:p-24">
       <Head>
-        <title>Chat with Eliyahu</title>
+        <title>Eliyahu.chat - An AskJudaism.org project</title>
         <meta
           name="description"
-          content="A chat with the prophet Elijah in AI form."
+          content="Where timeless Torah wisdom meets seeking souls - a sacred space for divine guidance, authentic Jewish learning, and spiritual elevation through the voice of Eliyahu HaNavi."
         />
         <meta
           name="viewport"
