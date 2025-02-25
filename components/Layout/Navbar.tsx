@@ -10,7 +10,7 @@ export const Navbar: FC = () => {
         >
           <span className="whitespace-nowrap">{'\u{1F525}'}{'\u{2721}'} AI Eliyahu HaNavi</span>
           <br className="sm:hidden" />
-          <span className="whitespace-nowrap sm:inline-block sm:ml-1">(Elijah The Prophet)</span>
+          <span className="whitespace-nowrap sm:inline-block sm:ml-1">(Elijah The Prophet) <span className="text-lg">(v0.5.1-Feb2025)</span></span>
         </a>
       </div>
     </div>
