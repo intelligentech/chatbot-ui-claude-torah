@@ -1,5 +1,6 @@
 import { Message } from "@/types";
 import { FC } from "react";
+import ReactMarkdown from 'react-markdown';
 
 interface Props {
   message: Message;
@@ -16,7 +17,7 @@ export const ChatMessage: FC<Props> = ({ message }) => {
         } rounded-2xl px-3 py-2 max-w-[75%] whitespace-pre-wrap`}
         style={{ overflowWrap: "anywhere" }}
       >
-        {message.content}
+        <ReactMarkdown>{message.content}</ReactMarkdown>
       </div>
     </div>
   );
