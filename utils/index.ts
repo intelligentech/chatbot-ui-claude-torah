@@ -346,24 +346,3 @@ By the authority of the *mesorah* of Jewish thought and AI ethics, this synthesi
     throw error;
   }
 };
-
-interface ChatMessageProps {
-  message: Message;
-}
-
-export const ChatMessage: FC<ChatMessageProps> = ({ message }) => {
-  return (
-    <div className={`flex flex-col ${message.role === "assistant" ? "items-start" : "items-end"}`}>
-      <div
-        className={`flex items-center ${
-          message.role === "assistant" 
-            ? "bg-[#f7e1ff] bg-opacity-60 text-neutral-900" 
-            : "bg-blue-500 bg-opacity-60 text-white"
-        } rounded-2xl px-3 py-2 max-w-[75%] whitespace-pre-wrap`}
-        style={{ overflowWrap: "anywhere" }}
-      >
-        <ReactMarkdown>{message.content}</ReactMarkdown>
-      </div>
-    </div>
-  );
-};

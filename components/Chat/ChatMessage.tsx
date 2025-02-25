@@ -1,12 +1,12 @@
-import { Message } from "@/types";
 import { FC } from "react";
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown from "react-markdown";
+import { Message } from "@/types";
 
-interface Props {
+interface ChatMessageProps {
   message: Message;
 }
 
-export const ChatMessage: FC<Props> = ({ message }) => {
+export const ChatMessage: FC<ChatMessageProps> = ({ message }) => {
   return (
     <div className={`flex flex-col ${message.role === "assistant" ? "items-start" : "items-end"}`}>
       <div
