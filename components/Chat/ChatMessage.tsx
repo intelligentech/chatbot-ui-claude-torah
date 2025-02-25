@@ -10,20 +10,21 @@ export const ChatMessage: FC<ChatMessageProps> = ({ message }) => {
   return (
     <div className={`flex flex-col ${message.role === "assistant" ? "items-start" : "items-end"}`}>
       <div
-        className={`flex items-center ${
+        className={`${
           message.role === "assistant" 
             ? "bg-[#f7e1ff] bg-opacity-60 text-neutral-900" 
             : "bg-blue-500 bg-opacity-60 text-white"
-        } rounded-2xl px-3 py-2 max-w-[75%] whitespace-pre-wrap`}
-        style={{ overflowWrap: "anywhere" }}
+        } rounded-2xl px-3 py-2 max-w-[75%]`}
       >
-        <ReactMarkdown
-          components={{
-            p: ({ children }) => <p className="w-full m-0">{children}</p>
-          }}
-        >
-          {message.content}
-        </ReactMarkdown>
+        <div className="prose prose-sm">
+          <ReactMarkdown
+            components={{
+              p: ({ children }) => <p className="mb-0 last:mb-0">{children}</p>
+            }}
+          >
+            {message.content}
+          </ReactMarkdown>
+        </div>
       </div>
     </div>
   );
