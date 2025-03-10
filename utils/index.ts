@@ -332,10 +332,10 @@ By the authority of the *mesorah* of Jewish thought and AI ethics, this synthesi
           role: msg.role === 'user' ? 'user' : 'assistant',
           content: msg.content
         })),
-        max_tokens: 1111,
+        max_tokens: 1400,
         temperature: 0.9,
         top_p: 0.9,
-        top_k: 48,
+        top_k: 24,
         stream: true
       })
     });
