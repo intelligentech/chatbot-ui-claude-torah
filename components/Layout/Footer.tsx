@@ -9,10 +9,10 @@ export const Footer: FC = () => {
         <p className="italic text-[16px] text-black">
         Disclaimer: This content is for educational and inspirational purposes only. For matters of practical Jewish law (halacha) and personal religious guidance, please consult with a qualified Orthodox Rabbi.
         </p>
-        <div className="mt-3">© 2025 AskJudaism.com — 
+        <div className="mt-3">© 2025 AskJudaism.com —&nbsp;
           <a 
             href="https://eliyahu.chat" 
-            className="text-blue-600 hover:text-blue-800 underline font-medium text-lg transition-colors duration-200"
+            className="text-blue-600 hover:text-blue-800 underline font-medium text-lg transition-colors duration-500"
           >
             Eliyahu.chat
           </a>
