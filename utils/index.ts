@@ -333,7 +333,7 @@ By the authority of the *mesorah* of Jewish thought and AI ethics, this synthesi
         })),
         max_tokens: 1440,
         temperature: 1,
-        top_p: 0.9,
+        top_p: 0.88,
         top_k: 18,
         stream: true
       })
