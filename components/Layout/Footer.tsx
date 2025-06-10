@@ -7,7 +7,7 @@ export const Footer: FC = () => {
       </div>
       <div className="text-center px-4 py-2">
         <p className="italic text-[18px] text-black">
-          Important note: This is a simulation based on Torah sources. It should not be relied upon for practical religious law or as a substitute for qualified rabbinic counsel.
+        Disclaimer: This content is for educational and inspirational purposes only. For matters of practical Jewish law (halacha) and personal religious guidance, please consult with a qualified Orthodox Rabbi.
         </p>
       </div>
     </div>
