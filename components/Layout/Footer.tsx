@@ -7,7 +7,7 @@ export const Footer: FC = () => {
       </div>
       <div className="text-center px-4 py-2">
         <p className="italic text-[16px] text-black">
-        Disclaimer: This content is for educational and inspirational purposes only. For matters of practical Jewish law (halacha) and personal religious guidance, please consult with a qualified Orthodox Rabbi.
+        Disclaimer: This content is for educational and inspirational purposes only. For matters of practical Jewish law (halacha) and personal religious guidance, please consult with a qualified Orthodox Jewish Rabbi.
         </p>
         <div className="mt-3">© 2025 AskJudaism.com —&nbsp;
           <a 
