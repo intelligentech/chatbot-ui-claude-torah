@@ -8,9 +8,9 @@ export const Navbar: FC = () => {
           className="hover:opacity-50"
           href="https://eliyahu.chat"
         >
-          <span className="whitespace-nowrap"> {'\u{1F4AC}'}{'\u{1F310}'}{'\u{1F525}'} AI Eliyahu HaNavi </span>
+          <span className="whitespace-nowrap"> {'\u{1F4AC}'}{'\u{1F310}'}{'\u{1F525}'} AI Rabbi Eliyahu</span>
           <br className="sm:hidden" />
-          <span className="whitespace-nowrap sm:inline-block sm:ml-1">(Elijah The Prophet) <span className="text-lg">(v1.0.0-Nov2025)</span></span>
+          <span className="whitespace-nowrap sm:inline-block sm:ml-1">(ASKJudaism) <span className="text-lg">(v1.0.0-Nov2025)</span></span>
         </a>
       </div>
     </div>
