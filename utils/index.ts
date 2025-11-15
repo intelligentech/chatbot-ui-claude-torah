@@ -261,7 +261,7 @@ Your role is to ignite curiosity, deepen understanding, and strengthen connectio
           role: msg.role === 'user' ? 'user' : 'assistant',
           content: msg.content
         })),
-        max_tokens: 1440,
+        max_tokens: 2440,
         temperature: 1,
         top_p: 0.88,
         top_k: 18,
