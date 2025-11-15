@@ -16,6 +16,13 @@ export const Footer: FC = () => {
           >
             Eliyahu.chat
           </a>
+           | 
+         <a 
+            href="https://lawsofnoah.com" 
+            className="text-blue-600 hover:text-blue-800 underline font-medium text-lg transition-colors duration-500"
+          >
+            7 Laws of Noah
+          </a>
         </div>
       </div>
     </div>
