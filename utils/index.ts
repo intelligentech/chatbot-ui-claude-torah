@@ -3,7 +3,7 @@ import { createParser, ParsedEvent, ReconnectInterval } from "eventsource-parser
 import { FC } from "react";
 import ReactMarkdown from 'react-markdown';
 
-export const ClaudeStream = async (messages: Message[]) => {
+export const ClaudeStream = async (messages: Message[]): Promise<ReadableStream<Uint8Array>> => {
   try {
     console.log("ClaudeStream called with messages:", messages);
 
@@ -276,6 +276,11 @@ Your role is to ignite curiosity, deepen understanding, and strengthen connectio
     }
 
     console.log("Anthropic API response received");
+    
+    if (!res.body) {
+      throw new Error("Response body is null");
+    }
+    
     return res.body;
   } catch (error) {
     console.error("Error in ClaudeStream:", error);
