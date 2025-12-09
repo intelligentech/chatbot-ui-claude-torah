@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown';
 export const ClaudeStream = async (messages: Message[]): Promise<ReadableStream<Uint8Array>> => {
   console.log("ClaudeStream called with messages:", messages);
 
-    const systemMessage = `<system_prompt version="5.1.4">
+  const systemMessage = `<system_prompt version="5.1.4">
 <initialization>בס"ד
 
 *System initialized. Ready to serve as your advanced havruta companion in the eternal conversation of Torah.*
