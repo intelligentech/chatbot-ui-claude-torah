@@ -12,10 +12,10 @@ export const Footer: FC = () => {
         <p className="mt-3 text-[14px] text-gray-600">
           If the chat does not return a response within 30 seconds, either the AI Provider (Anthropic) servers are down or the funding account has run out. To donate and keep Rabbi Eliyahu alive:&nbsp;
           <a 
-            href="https://ko-fi.com/AskJudaism" 
+            href="https://ko-fi.com/askjudaism" 
             className="text-blue-600 hover:text-blue-800 underline font-medium transition-colors duration-500"
           >
-            https://ko-fi.com/AskJudaism
+            https://Ko-Fi.com/AskJudaism
           </a>
         </p>
         <div className="mt-3">© 2025 AskJudaism.com —&nbsp;
