@@ -4,8 +4,7 @@ import { FC } from "react";
 import ReactMarkdown from 'react-markdown';
 
 export const ClaudeStream = async (messages: Message[]): Promise<ReadableStream<Uint8Array>> => {
-  try {
-    console.log("ClaudeStream called with messages:", messages);
+  console.log("ClaudeStream called with messages:", messages);
 
     const systemMessage = `<system_prompt version="5.1.4">
 <initialization>בס"ד
@@ -246,44 +245,40 @@ Your role is to ignite curiosity, deepen understanding, and strengthen connectio
 
 </system_prompt>`;
 
-    console.log("Sending request to Anthropic API");
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": `${process.env.ANTHROPIC_API_KEY}`,
-        "anthropic-version": "2023-06-01"
-      },
-      method: "POST",
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        system: systemMessage,
-        messages: messages.map(msg => ({
-          role: msg.role === 'user' ? 'user' : 'assistant',
-          content: msg.content
-        })),
-        max_tokens: 1440,
-        temperature: 1,
-        top_p: 0.88,
-        top_k: 18,
-        stream: true
-      })
-    });
+  console.log("Sending request to Anthropic API");
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": `${process.env.ANTHROPIC_API_KEY}`,
+      "anthropic-version": "2023-06-01"
+    },
+    method: "POST",
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      system: systemMessage,
+      messages: messages.map(msg => ({
+        role: msg.role === 'user' ? 'user' : 'assistant',
+        content: msg.content
+      })),
+      max_tokens: 1440,
+      temperature: 1,
+      top_p: 0.88,
+      top_k: 18,
+      stream: true
+    })
+  });
 
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error("Anthropic API error:", res.status, errorText);
-      throw new Error(`Anthropic API returned an error: ${res.status} ${res.statusText}\n${errorText}`);
-    }
-
-    console.log("Anthropic API response received");
-    
-    if (!res.body) {
-      throw new Error("Response body is null");
-    }
-    
-    return res.body;
-  } catch (error) {
-    console.error("Error in ClaudeStream:", error);
-    throw error;
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error("Anthropic API error:", res.status, errorText);
+    throw new Error(`Anthropic API returned an error: ${res.status} ${res.statusText}\n${errorText}`);
   }
+
+  console.log("Anthropic API response received");
+  
+  if (!res.body) {
+    throw new Error("Response body is null");
+  }
+  
+  return res.body;
 };
