@@ -21,6 +21,10 @@ const handler = async (req: Request): Promise<Response> => {
     const stream = await ClaudeStream(messagesToSend);
     console.log("Stream received from ClaudeStream");
 
+    if (!stream) {
+      throw new Error("Failed to get stream from Claude");
+    }
+
     return new Response(stream, {
       headers: { 'Content-Type': 'text/event-stream' }
     });
