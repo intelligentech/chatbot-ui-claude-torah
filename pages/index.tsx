@@ -157,7 +157,7 @@ What thoughts or questions are on your heart today?`
   };
 
   return (
-    <div className="flex flex-col min-h-screen p-4 sm:p-8 md:p-16 lg:p-24">
+    <div className="flex flex-col min-h-screen">
       <Head>
         <title>Eliyahu.chat - An AskJudaism.org project</title>
         <meta
