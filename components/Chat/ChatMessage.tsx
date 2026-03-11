@@ -11,13 +11,13 @@ export const ChatMessage: FC<ChatMessageProps> = ({ message }) => {
   const processedContent = message.content.replace(/\[([^\]]*)\]/g, '**[$1]**');
 
   return (
-    <div className={`flex flex-col ${message.role === "assistant" ? "items-start" : "items-end"}`}>
+    <div className={`flex flex-col ${message.role === "assistant" ? "items-start" : "items-end"} animate-fadeIn`}>
       <div
         className={`${
           message.role === "assistant" 
             ? "bg-[#f7e1ff] bg-opacity-60 text-neutral-900" 
             : "bg-blue-500 bg-opacity-60 text-white"
-        } rounded-2xl px-3 py-2 max-w-[75%]`}
+        } rounded-2xl px-3 py-2 max-w-[75%] shadow-sm`}
       >
         <div className="prose prose-sm">
           <ReactMarkdown

@@ -256,7 +256,7 @@ Your role is to ignite curiosity, deepen understanding, and strengthen connectio
       },
       method: "POST",
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-6",
         system: systemMessage,
         messages: messages.map(msg => ({
           role: msg.role === 'user' ? 'user' : 'assistant',
@@ -264,8 +264,6 @@ Your role is to ignite curiosity, deepen understanding, and strengthen connectio
         })),
         max_tokens: 1440,
         temperature: 1,
-        top_p: 0.88,
-        top_k: 18,
         stream: true
       })
     });

@@ -4,9 +4,10 @@ import { FC, KeyboardEvent, useEffect, useRef, useState } from "react";
 
 interface Props {
   onSend: (message: Message) => void;
+  disabled?: boolean;
 }
 
-export const ChatInput: FC<Props> = ({ onSend }) => {
+export const ChatInput: FC<Props> = ({ onSend, disabled = false }) => {
   const [content, setContent] = useState<string>();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -22,6 +23,7 @@ export const ChatInput: FC<Props> = ({ onSend }) => {
   };
 
   const handleSend = () => {
+    if (disabled) return;
     if (!content) {
       alert("Please enter a message");
       return;
@@ -48,17 +50,18 @@ export const ChatInput: FC<Props> = ({ onSend }) => {
     <div className="relative">
       <textarea
         ref={textareaRef}
-        className="min-h-[44px] rounded-lg pl-4 pr-12 py-2 w-full focus:outline-none focus:ring-1 focus:ring-neutral-300 border-2 border-neutral-200"
+        className={`min-h-[44px] rounded-lg pl-4 pr-12 py-2 w-full focus:outline-none focus:ring-1 focus:ring-neutral-300 border-2 border-neutral-200 transition-opacity ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         style={{ resize: "none" }}
-        placeholder="Type a message..."
+        placeholder={disabled ? "Rabbi Eliyahu is thinking..." : "Type a message..."}
         value={content}
         rows={1}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
+        disabled={disabled}
       />
 
-      <button onClick={() => handleSend()}>
-        <IconArrowUp className="absolute right-2 bottom-3 h-8 w-8 hover:cursor-pointer rounded-full p-1 bg-blue-500 text-white hover:opacity-80" />
+      <button onClick={() => handleSend()} disabled={disabled}>
+        <IconArrowUp className={`absolute right-2 bottom-3 h-8 w-8 rounded-full p-1 bg-blue-500 text-white transition-opacity ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:cursor-pointer hover:opacity-80'}`} />
       </button>
     </div>
   );

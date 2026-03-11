@@ -19,24 +19,24 @@ export const Chat: FC<Props> = ({ messages, loading, onSend, onReset }) => {
         <ResetChat onReset={onReset} />
       </div>
 
-      <div className="flex flex-col rounded-lg px-3 py-6 sm:p-4 sm:border border-neutral-400 bg-white bg-opacity-20">
+      <div className="flex flex-col rounded-lg px-3 py-6 sm:p-6 sm:border border-neutral-400 bg-white bg-opacity-20 shadow-md">
         {messages.map((message, index) => (
           <div
             key={index}
-            className="my-1 sm:my-1.5"
+            className="my-2 sm:my-3"
           >
             <ChatMessage message={message} />
           </div>
         ))}
 
         {loading && (
-          <div className="my-1 sm:my-1.5">
+          <div className="my-2 sm:my-3">
             <ChatLoader />
           </div>
         )}
 
         <div className="mt-4 sm:mt-8 bottom-[56px] left-0 w-full">
-          <ChatInput onSend={onSend} />
+          <ChatInput onSend={onSend} disabled={loading} />
         </div>
       </div>
     </>
