@@ -2,22 +2,235 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --gold: #c9a227;
+  --ink: #0b1026;
+}
+
 html,
 body {
   min-height: 100vh;
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background: #0b1026;
+  color: #1a1a2e;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  background: hsla(211, 66%, 87%, 1);
-  background: radial-gradient(circle, hsla(211, 66%, 87%, 1) 0%, hsla(348, 67%, 88%, 1) 50%, hsla(272, 26%, 72%, 1) 100%);
-  background: -moz-radial-gradient(circle, hsla(211, 66%, 87%, 1) 0%, hsla(348, 67%, 88%, 1) 50%, hsla(272, 26%, 72%, 1) 100%);
-  background: -webkit-radial-gradient(circle, hsla(211, 66%, 87%, 1) 0%, hsla(348, 67%, 88%, 1) 50%, hsla(272, 26%, 72%, 1) 100%);
-  filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#c9def4", endColorstr="#f5ccd4", GradientType=1 );
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgba(201, 162, 39, 0.22), transparent 60%),
+    radial-gradient(1000px 700px at 90% 10%, rgba(64, 78, 231, 0.28), transparent 60%),
+    radial-gradient(900px 600px at 50% 110%, rgba(201, 162, 39, 0.14), transparent 60%),
+    linear-gradient(180deg, #0b1026 0%, #131a45 48%, #1d1440 100%);
   background-attachment: fixed;
+}
+
+::selection {
+  background: rgba(201, 162, 39, 0.35);
+}
+
+/* Sacred scrollbar */
+.sacred-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.sacred-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sacred-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #e4b845, #86691a);
+  border-radius: 99px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* Hebrew watermark */
+.hebrew-watermark {
+  font-family: "Frank Ruhl Libre", Georgia, serif;
+  -webkit-text-stroke: 1px rgba(201, 162, 39, 0.14);
+  color: transparent;
+  user-select: none;
+  pointer-events: none;
+  line-height: 1;
+}
+
+/* Chat typography — premium Talmudic reader */
+.sacred-prose {
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: #232136;
+  word-break: break-word;
+}
+.sacred-prose h1,
+.sacred-prose h2,
+.sacred-prose h3 {
+  font-family: "Frank Ruhl Libre", Georgia, serif;
+  font-weight: 700;
+  color: #111741;
+  line-height: 1.3;
+  margin: 0.9em 0 0.45em 0;
+}
+.sacred-prose h2 {
+  font-size: 1.25em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid rgba(201, 162, 39, 0.3);
+}
+.sacred-prose p {
+  margin: 0.6em 0;
+}
+.sacred-prose p:first-child {
+  margin-top: 0;
+}
+.sacred-prose p:last-child {
+  margin-bottom: 0;
+}
+.sacred-prose strong {
+  color: #111741;
+  font-weight: 700;
+}
+.sacred-prose ul,
+.sacred-prose ol {
+  margin: 0.6em 0;
+  padding-left: 1.25em;
+}
+.sacred-prose li {
+  margin: 0.3em 0;
+}
+.sacred-prose li::marker {
+  color: var(--gold);
+}
+.sacred-prose blockquote {
+  margin: 0.8em 0;
+  padding: 0.7em 1em 0.7em 1.1em;
+  background: linear-gradient(135deg, rgba(201, 162, 39, 0.12), rgba(201, 162, 39, 0.05));
+  border-left: 3px solid var(--gold);
+  border-radius: 0 12px 12px 0;
+  font-family: "Frank Ruhl Libre", Georgia, serif;
+  font-style: italic;
+  color: #4a3f1a;
+}
+.sacred-prose blockquote p {
+  margin: 0.3em 0;
+}
+.sacred-prose code {
+  font-size: 0.85em;
+  background: rgba(17, 23, 65, 0.07);
+  border: 1px solid rgba(17, 23, 65, 0.1);
+  padding: 0.15em 0.4em;
+  border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.sacred-prose hr {
+  border: none;
+  height: 1px;
+  margin: 1.1em auto;
+  width: 60%;
+  background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.6), transparent);
+}
+.sacred-prose a {
+  color: #252e7a;
+  text-decoration: underline;
+  text-decoration-color: rgba(201, 162, 39, 0.6);
+  text-underline-offset: 3px;
+}
+
+/* User bubble prose (on dark) */
+.sacred-prose-light {
+  color: #eef0ff;
+}
+.sacred-prose-light strong {
+  color: #fff;
+}
+.sacred-prose-light a {
+  color: #f4e0a3;
+}
+
+/* Animations */
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.animate-fadeIn {
+  animation: fadeSlide 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes bounceDot {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.35;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.typing-dot {
+  animation: bounceDot 1.3s infinite ease-in-out;
+}
+.typing-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.typing-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes shimmerLine {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.shimmer-text {
+  background: linear-gradient(90deg, #86691a 25%, #eccc6e 50%, #86691a 75%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmerLine 2.2s linear infinite;
+}
+
+@keyframes floatY {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+/* Glass card edge highlight */
+.glass-edge {
+  position: relative;
+}
+.glass-edge::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(201, 162, 39, 0.35) 30%, rgba(255, 255, 255, 0.1) 60%, rgba(201, 162, 39, 0.25));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Textarea reset */
+textarea:focus {
+  outline: none;
 }
 
 a {
@@ -27,19 +240,4 @@ a {
 
 * {
   box-sizing: border-box;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.3s ease-out;
 }
