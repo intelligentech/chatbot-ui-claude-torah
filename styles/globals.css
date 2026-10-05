@@ -29,7 +29,15 @@ body {
 }
 
 ::selection {
-  background: rgba(201, 162, 39, 0.35);
+  background: #c9a227;
+  color: #0b1026;
+}
+
+/* Visible keyboard focus everywhere */
+:focus-visible {
+  outline: 2px solid #c9a227;
+  outline-offset: 2px;
+  border-radius: 6px;
 }
 
 /* Sacred scrollbar */
@@ -62,6 +70,12 @@ body {
   line-height: 1.75;
   color: #232136;
   word-break: break-word;
+  text-wrap: pretty;
+}
+
+h1,
+h2 {
+  text-wrap: balance;
 }
 .sacred-prose h1,
 .sacred-prose h2,
@@ -184,21 +198,9 @@ body {
   animation-delay: 0.3s;
 }
 
-@keyframes shimmerLine {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-.shimmer-text {
-  background: linear-gradient(90deg, #86691a 25%, #eccc6e 50%, #86691a 75%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: shimmerLine 2.2s linear infinite;
+/* Loader label — solid high-contrast gold-ink (replaces shimmer wash) */
+.loader-label {
+  color: #6e5614;
 }
 
 @keyframes floatY {
@@ -231,6 +233,17 @@ body {
 /* Textarea reset */
 textarea:focus {
   outline: none;
+}
+
+/* Respect users who prefer minimal motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 a {

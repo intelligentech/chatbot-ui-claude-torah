@@ -52,19 +52,29 @@ export const ChatInput: FC<Props> = ({ onSend, disabled = false }) => {
     }
   }, [content]);
 
+  // Desktop: focus the composer on load so typing starts instantly.
+  // Skipped on touch devices to avoid popping the mobile keyboard.
+  useEffect(() => {
+    if (window.matchMedia("(pointer: fine)").matches) {
+      textareaRef.current?.focus({ preventScroll: true });
+    }
+  }, []);
+
   const count = content.length;
   const nearLimit = count > 3500;
 
   return (
     <div
-      className={`glass-edge rounded-[20px] border border-ink-900/10 bg-white/90 shadow-sacred backdrop-blur-xl transition ${
-        disabled ? "opacity-90" : "focus-within:border-gold-500/60 focus-within:shadow-glow"
+      className={`rounded-[20px] border bg-white shadow-sacred transition ${
+        disabled
+          ? "border-ink-900/10"
+          : "border-ink-900/15 focus-within:border-gold-600 focus-within:ring-2 focus-within:ring-gold-500/40"
       }`}
     >
       <div className="flex items-end gap-2 p-2.5 pl-4">
         <textarea
           ref={textareaRef}
-          className="max-h-[180px] min-h-[52px] flex-1 resize-none bg-transparent py-2.5 text-[15px] leading-relaxed text-ink-950 placeholder:text-ink-900/35"
+          className="max-h-[180px] min-h-[52px] flex-1 resize-none bg-transparent py-2.5 text-[15px] leading-relaxed text-ink-950 placeholder:text-[#6f6e8a]"
           style={{ resize: "none" }}
           placeholder={disabled ? "Rabbi Eliyahu is reflecting…" : "Ask about Torah, halacha, hashkafa, tefillah…"}
           value={content}
@@ -72,6 +82,7 @@ export const ChatInput: FC<Props> = ({ onSend, disabled = false }) => {
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           disabled={disabled}
+          aria-label="Message Rabbi Eliyahu"
         />
 
         <button
@@ -80,22 +91,27 @@ export const ChatInput: FC<Props> = ({ onSend, disabled = false }) => {
           aria-label="Send message"
           className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl transition-all duration-200 ${
             disabled || !content.trim()
-              ? "cursor-not-allowed bg-ink-900/10 text-ink-900/30"
-              : "bg-gradient-to-br from-gold-400 via-gold-500 to-gold-700 text-ink-950 shadow-glow hover:brightness-110 hover:scale-105 active:scale-95"
+              ? "cursor-not-allowed bg-ink-900/[0.08] text-ink-900/40"
+              : "bg-gradient-to-b from-gold-400 to-gold-600 text-ink-950 shadow-glow ring-1 ring-gold-700/30 hover:brightness-105 hover:scale-105 active:scale-95"
           }`}
         >
           <IconArrowUp size={20} stroke={2.5} />
         </button>
       </div>
 
-      <div className="flex items-center justify-between border-t border-ink-900/[0.07] px-4 py-2">
-        <span className="text-[11.5px] text-ink-900/45">
-          <kbd className="rounded-md border border-ink-900/15 bg-ink-900/[0.04] px-1.5 py-0.5 font-sans text-[10.5px] font-semibold">
+      <div className="flex items-center justify-between gap-2 border-t border-ink-900/10 px-4 py-2">
+        <span className="hidden text-[11.5px] text-[#5b5878] sm:inline">
+          <kbd className="rounded-md border border-ink-900/20 bg-ink-900/[0.05] px-1.5 py-0.5 font-sans text-[10.5px] font-bold text-ink-900">
             Enter
           </kbd>{" "}
-          to send · <kbd className="rounded-md border border-ink-900/15 bg-ink-900/[0.04] px-1.5 py-0.5 font-sans text-[10.5px] font-semibold">Shift + Enter</kbd> for new line
+          to send ·{" "}
+          <kbd className="rounded-md border border-ink-900/20 bg-ink-900/[0.05] px-1.5 py-0.5 font-sans text-[10.5px] font-bold text-ink-900">
+            Shift + Enter
+          </kbd>{" "}
+          for new line
         </span>
-        <span className={`text-[11.5px] tabular-nums ${nearLimit ? "font-semibold text-red-600" : "text-ink-900/40"}`}>
+        <span className="text-[11.5px] text-[#5b5878] sm:hidden">Enter ↵ to send</span>
+        <span className={`text-[11.5px] tabular-nums ${nearLimit ? "font-bold text-red-700" : "text-[#5b5878]"}`}>
           {count}/4000
         </span>
       </div>

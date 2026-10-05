@@ -2,9 +2,9 @@ import { Chat } from "@/components/Chat/Chat";
 import { Footer } from "@/components/Layout/Footer";
 import { Navbar } from "@/components/Layout/Navbar";
 import { Message, Role } from "@/types";
-import { IconArrowDown } from "@tabler/icons-react";
+import { IconBook, IconHeartHandshake, IconLock } from "@tabler/icons-react";
 import Head from "next/head";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 
 const WELCOME_MESSAGE: Message = {
   role: "assistant" as Role,
@@ -14,28 +14,12 @@ const WELCOME_MESSAGE: Message = {
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [showJump, setShowJump] = useState(false);
-
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const scrollToBottom = (instant = false) => {
-    messagesEndRef.current?.scrollIntoView({ behavior: instant ? "auto" : "smooth", block: "end" });
-  };
-
-  const handleScroll = () => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
-    setShowJump(distanceFromBottom > 320);
-  };
 
   const handleSend = async (message: Message) => {
     const updatedMessages = [...messages, message];
 
     setMessages(updatedMessages);
     setLoading(true);
-    requestAnimationFrame(() => scrollToBottom(true));
 
     try {
       const response = await fetch("/api/chat", {
@@ -104,7 +88,6 @@ export default function Home() {
       ]);
     } finally {
       setLoading(false);
-      setTimeout(() => scrollToBottom(false), 60);
     }
   };
 
@@ -119,10 +102,6 @@ export default function Home() {
   const handleReset = () => {
     setMessages([WELCOME_MESSAGE]);
   };
-
-  useEffect(() => {
-    scrollToBottom(messages.length <= 2);
-  }, [messages.length, loading]);
 
   return (
     <div className="relative flex min-h-screen flex-col">
@@ -182,25 +161,24 @@ export default function Home() {
           {/* Eyebrow */}
           <div className="mb-4 flex items-center gap-2.5">
             <span className="h-px w-8 bg-gradient-to-r from-transparent to-gold-400/70" />
-            <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-gold-300">
+            <span className="text-[12px] font-bold uppercase tracking-[0.2em] text-gold-200">
               בס״ד · Torah · Tefillah · Teshuva
             </span>
             <span className="h-px w-8 bg-gradient-to-l from-transparent to-gold-400/70" />
           </div>
 
-          <h1 className="font-serif text-center text-[30px] font-bold leading-tight tracking-tight text-parchment-50 sm:text-[42px]">
-            Ask <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent">Rabbi Eliyahu</span>
+          <h1 className="font-serif text-center text-[30px] font-bold leading-tight tracking-tight text-white sm:text-[42px]">
+            Ask{" "}
+            <span className="bg-gradient-to-r from-gold-100 via-gold-300 to-gold-100 bg-clip-text text-transparent [filter:drop-shadow(0_2px_14px_rgba(201,162,39,0.3))]">
+              Rabbi Eliyahu
+            </span>
           </h1>
-          <p className="mb-5 mt-2 max-w-xl text-center text-[14px] leading-relaxed text-white/60 sm:text-[15px]">
+          <p className="mb-5 mt-2 max-w-xl text-center text-[15px] leading-relaxed text-white/85">
             A sacred havruta for Torah learning, spiritual growth, and life&apos;s deepest questions — grounded in authentic mesorah.
           </p>
 
           {/* Chat card */}
-          <div
-            ref={scrollRef}
-            onScroll={handleScroll}
-            className="relative w-full max-w-[880px]"
-          >
+          <div className="w-full max-w-[880px]">
             <Chat
               messages={messages}
               loading={loading}
@@ -208,24 +186,31 @@ export default function Home() {
               onReset={handleReset}
               onSuggestion={handleSuggestion}
             />
-            <div ref={messagesEndRef} />
-
-            {showJump && (
-              <button
-                onClick={() => scrollToBottom(false)}
-                className="absolute bottom-24 left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-gold-500/30 bg-ink-950/90 px-4 py-2 text-[12.5px] font-medium text-gold-200 shadow-sacred backdrop-blur transition hover:bg-ink-900 active:scale-95"
-              >
-                <IconArrowDown size={14} />
-                Latest message
-              </button>
-            )}
           </div>
 
           {/* Trust row */}
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-2 text-[12px] text-white/45">
-            <span className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 backdrop-blur">📖 Sourced in Tanakh · Talmud · Rishonim</span>
-            <span className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 backdrop-blur">🕊️ Pastoral & non-judgmental</span>
-            <span className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 backdrop-blur">🔒 Private — nothing stored</span>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-2 text-[12.5px] font-medium text-white/80">
+            <span className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 backdrop-blur">
+              <IconBook
+                size={14}
+                className="text-gold-200"
+              />
+              Sourced in Tanakh · Talmud · Rishonim
+            </span>
+            <span className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 backdrop-blur">
+              <IconHeartHandshake
+                size={14}
+                className="text-gold-200"
+              />
+              Pastoral &amp; non-judgmental
+            </span>
+            <span className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 backdrop-blur">
+              <IconLock
+                size={14}
+                className="text-gold-200"
+              />
+              Private — nothing stored
+            </span>
           </div>
         </main>
 
