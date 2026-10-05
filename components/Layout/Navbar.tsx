@@ -54,12 +54,24 @@ export const Navbar: FC = () => {
       </div>
       {/* gold hairline glow */}
       <div className="h-px bg-gradient-to-r from-transparent via-gold-400/60 to-transparent" />
-      <div className="mx-auto flex max-w-5xl items-center justify-center gap-1.5 px-4 py-1.5 text-[12.5px] font-medium text-white/70">
+      <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-x-2 gap-y-0.5 px-4 py-1.5 text-[12.5px] font-medium text-white/70">
         <IconSparkles
           size={13}
           className="shrink-0 text-gold-300"
         />
         <span className="tracking-wide">Where timeless Torah wisdom meets seeking souls</span>
+        <span
+          aria-hidden
+          className="text-white/25 md:hidden"
+        >
+          ·
+        </span>
+        <a
+          href="https://lawsofnoah.com"
+          className="font-semibold text-gold-200 transition hover:text-gold-100 hover:underline hover:underline-offset-4 md:hidden"
+        >
+          7 Laws of Noah
+        </a>
       </div>
     </header>
   );
