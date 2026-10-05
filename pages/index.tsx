@@ -173,7 +173,7 @@ export default function Home() {
               Rabbi Eliyahu
             </span>
           </h1>
-          <p className="mb-3 mt-1.5 max-w-xl text-center text-[15px] leading-relaxed text-white/85">
+          <p className="mb-2 mt-1 max-w-xl text-center text-[15px] leading-relaxed text-white/85">
             A sacred havruta for Torah learning, spiritual growth, and life&apos;s deepest questions — grounded in authentic mesorah.
           </p>
 
