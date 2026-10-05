@@ -1,4 +1,4 @@
-import { IconHeartHandshake, IconSparkles } from "@tabler/icons-react";
+import { IconHeartHandshake, IconScale, IconSparkles } from "@tabler/icons-react";
 import { FC } from "react";
 import { StarMark } from "./StarMark";
 
@@ -38,8 +38,9 @@ export const Navbar: FC = () => {
         <div className="flex items-center gap-2">
           <a
             href="https://lawsofnoah.com"
-            className="hidden rounded-full px-3 py-2 text-[13px] font-medium text-white/85 transition hover:bg-white/10 hover:text-white md:block"
+            className="hidden items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-[13px] font-semibold text-white shadow-sm transition hover:border-gold-200/70 hover:bg-white/15 hover:text-gold-100 active:scale-95 md:flex"
           >
+            <IconScale size={15} />
             7 Laws of Noah
           </a>
           <a
