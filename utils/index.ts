@@ -262,7 +262,7 @@ Your role is to ignite curiosity, deepen understanding, and strengthen connectio
           role: msg.role === 'user' ? 'user' : 'assistant',
           content: msg.content
         })),
-        max_tokens: 1440,
+        max_tokens: 4096,
         temperature: 1,
         stream: true
       })
@@ -271,11 +271,15 @@ Your role is to ignite curiosity, deepen understanding, and strengthen connectio
     if (!res.ok) {
       const errorText = await res.text();
       console.error("Anthropic API error:", res.status, errorText);
-      return null;
+      throw new Error(`Anthropic API error (${res.status}): ${errorText.slice(0, 500)}`);
     }
 
     console.log("Anthropic API response received");
-    return res.body;
+    const body = res.body;
+    if (!body) {
+      throw new Error("Empty response body from Anthropic");
+    }
+    return body;
   } catch (error) {
     console.error("Error in ClaudeStream:", error);
     return null;

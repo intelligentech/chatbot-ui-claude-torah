@@ -3,6 +3,7 @@ import { Footer } from "@/components/Layout/Footer";
 import { Navbar } from "@/components/Layout/Navbar";
 import { Message, Role } from "@/types";
 import { IconBook, IconHeartHandshake, IconLock } from "@tabler/icons-react";
+import { createParser } from "eventsource-parser";
 import Head from "next/head";
 import { useCallback, useState } from "react";
 
@@ -21,6 +22,19 @@ export default function Home() {
     setMessages(updatedMessages);
     setLoading(true);
 
+    // Insert or replace the trailing assistant message. The bubble only
+    // materialises once there is real text — never as an empty card.
+    const upsertAssistant = (content: string) => {
+      setMessages((prevMessages) => {
+        const lastMessage = prevMessages[prevMessages.length - 1];
+        if (lastMessage?.role === "assistant") {
+          return [...prevMessages.slice(0, -1), { ...lastMessage, content }];
+        } else {
+          return [...prevMessages, { role: "assistant" as Role, content }];
+        }
+      });
+    };
+
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -33,64 +47,112 @@ export default function Home() {
       });
 
       if (!response.ok) {
-        throw new Error(response.statusText);
+        let detail = response.statusText;
+        try {
+          detail = await response.text();
+        } catch {}
+        throw new Error(`Chat request failed (${response.status}): ${detail.slice(0, 300)}`);
       }
 
-      const reader = response.body?.getReader();
+      if (!response.body) {
+        throw new Error("Empty response body");
+      }
+
+      const reader = response.body.getReader();
       const decoder = new TextDecoder();
 
-      if (!reader) {
-        throw new Error("Failed to get response reader");
-      }
-
       let accumulatedContent = "";
-      let partialLine = "";
+      let stopReason: string | null = null;
+      let sawMessageStop = false;
+      let streamError: string | null = null;
+
+      // Proper SSE framing (handles chunks split mid-event, \r\n, multi-byte
+      // Hebrew split across chunks). The old manual line-splitting could drop
+      // or corrupt deltas when a chunk boundary fell inside an event.
+      const parser = createParser((event) => {
+        if (event.type !== "event") return;
+        let data: any;
+        try {
+          data = JSON.parse(event.data);
+        } catch {
+          return;
+        }
+        if (data.type === "content_block_delta" && typeof data.delta?.text === "string") {
+          accumulatedContent += data.delta.text;
+          upsertAssistant(accumulatedContent);
+        } else if (data.type === "message_delta" && data.delta?.stop_reason) {
+          stopReason = data.delta.stop_reason;
+        } else if (data.type === "message_stop") {
+          sawMessageStop = true;
+        } else if (data.type === "error") {
+          streamError = data.error?.message || "Stream error from Rabbi Eliyahu";
+        }
+      });
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
+        parser.feed(decoder.decode(value, { stream: true }));
+      }
+      // Flush any trailing bytes and dispatch a final event that may be
+      // complete but missing its terminating blank line (truncated close).
+      // A genuinely truncated (unparseable) tail is ignored by the try/catch
+      // in the parser callback — never a duplicate on a clean stream.
+      parser.feed(decoder.decode());
+      parser.feed("\n\n");
 
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = (partialLine + chunk).split("\n");
-        partialLine = lines.pop() || "";
+      if (streamError) {
+        throw new Error(streamError);
+      }
+      if (!accumulatedContent) {
+        throw new Error("Empty response stream");
+      }
 
-        for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            try {
-              const data = JSON.parse(line.slice(6));
-              if (data.type === "content_block_delta" && data.delta?.text) {
-                accumulatedContent += data.delta.text;
-              }
-            } catch (e) {
-              console.error("Error parsing SSE data:", e);
-            }
-          }
-        }
-
-        // Only materialise the assistant bubble once there is real text to show.
-        // Appending it on the first (still textless) chunk renders an empty
-        // "Rabbi Eliyahu · Torah Companion" card next to the loader.
-        if (accumulatedContent) {
-          setMessages((prevMessages) => {
-            const lastMessage = prevMessages[prevMessages.length - 1];
-            if (lastMessage?.role === "assistant") {
-              return [...prevMessages.slice(0, -1), { ...lastMessage, content: accumulatedContent }];
-            } else {
-              return [...prevMessages, { role: "assistant" as Role, content: accumulatedContent }];
-            }
-          });
-        }
+      if (!sawMessageStop) {
+        // The transport closed before Anthropic said the message was
+        // complete (e.g. edge timeout, dropped connection). Show what
+        // arrived, but say so — a silently cut reply looks like a bug.
+        console.warn("Stream ended without message_stop; showing partial reply.");
+        upsertAssistant(
+          accumulatedContent +
+            "\n\n*— (My reply appears to have been cut off before I finished; please try again.)*"
+        );
+      } else {
+        upsertAssistant(accumulatedContent);
+      }
+      if (stopReason === "max_tokens") {
+        upsertAssistant(
+          accumulatedContent +
+            '\n\n*My reply reached its length limit — reply "continue" and I will pick up where I left off.*'
+        );
       }
     } catch (error) {
       console.error("Error in handleSend:", error);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          role: "assistant" as Role,
-          content:
-            "I apologize, but I encountered an error processing your request. This may be due to connectivity issues or the service being temporarily unavailable. Please try again in a moment.",
-        },
-      ]);
+      setMessages((prevMessages) => {
+        const lastMessage = prevMessages[prevMessages.length - 1];
+        const apology =
+          "I apologize, but I encountered an error processing your request. This may be due to connectivity issues or the service being temporarily unavailable. Please try again in a moment.";
+        // The partial reply (if any) belongs to this turn: fold the notice
+        // into it instead of appending a second assistant message, which
+        // would break user/assistant alternation for all future turns.
+        const isOwnPartial =
+          lastMessage?.role === "assistant" && prevMessages.length > updatedMessages.length;
+        if (isOwnPartial) {
+          return [
+            ...prevMessages.slice(0, -1),
+            {
+              ...lastMessage,
+              content: lastMessage.content
+                ? `${lastMessage.content}\n\n*— (The transmission was interrupted before I finished; please try again.)*`
+                : apology,
+            },
+          ];
+        }
+        return [
+          ...prevMessages,
+          { role: "assistant" as Role, content: apology },
+        ];
+      });
     } finally {
       setLoading(false);
     }

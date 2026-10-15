@@ -40,8 +40,8 @@ const SUGGESTIONS = [
   },
   {
     icon: IconBook,
-    label: "Parshat HaShavua",
-    prompt: "Share a short inspiring teaching from the weekly Torah portion.",
+    label: "Who is Messiah?",
+    prompt: "Who is the Messiah (Mashiach) in Jewish thought, and what will the Messianic era look like?",
   },
 ];
 
