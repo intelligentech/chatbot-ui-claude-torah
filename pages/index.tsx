@@ -67,14 +67,19 @@ export default function Home() {
           }
         }
 
-        setMessages((prevMessages) => {
-          const lastMessage = prevMessages[prevMessages.length - 1];
-          if (lastMessage.role === "assistant") {
-            return [...prevMessages.slice(0, -1), { ...lastMessage, content: accumulatedContent }];
-          } else {
-            return [...prevMessages, { role: "assistant" as Role, content: accumulatedContent }];
-          }
-        });
+        // Only materialise the assistant bubble once there is real text to show.
+        // Appending it on the first (still textless) chunk renders an empty
+        // "Rabbi Eliyahu · Torah Companion" card next to the loader.
+        if (accumulatedContent) {
+          setMessages((prevMessages) => {
+            const lastMessage = prevMessages[prevMessages.length - 1];
+            if (lastMessage?.role === "assistant") {
+              return [...prevMessages.slice(0, -1), { ...lastMessage, content: accumulatedContent }];
+            } else {
+              return [...prevMessages, { role: "assistant" as Role, content: accumulatedContent }];
+            }
+          });
+        }
       }
     } catch (error) {
       console.error("Error in handleSend:", error);
@@ -173,7 +178,7 @@ export default function Home() {
               Rabbi Eliyahu
             </span>
           </h1>
-          <p className="mb-2 mt-1 max-w-xl text-center text-[15px] leading-relaxed text-white/85">
+          <p className="mb-0.5 mt-0.5 max-w-4xl text-center text-[14px] leading-snug text-white/85 sm:text-[15px]">
             A sacred havruta for Torah learning, spiritual growth, and life&apos;s deepest questions — grounded in authentic mesorah.
           </p>
 

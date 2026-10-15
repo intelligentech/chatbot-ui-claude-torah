@@ -47,6 +47,10 @@ const SUGGESTIONS = [
 
 export const Chat: FC<Props> = ({ messages, loading, onSend, onReset, onSuggestion }) => {
   const showWelcome = messages.length <= 1;
+  // The loader stands in only until the first token lands, then the real
+  // assistant bubble takes over — otherwise both render at once.
+  const lastMessage = messages[messages.length - 1];
+  const isResponding = lastMessage?.role === "assistant" && lastMessage.content.length > 0;
   const listRef = useRef<HTMLDivElement>(null);
   const [stickToBottom, setStickToBottom] = useState(true);
 
@@ -150,7 +154,7 @@ export const Chat: FC<Props> = ({ messages, loading, onSend, onReset, onSuggesti
             />
           ))}
 
-          {loading && <ChatLoader />}
+          {loading && !isResponding && <ChatLoader />}
 
           {!loading && !showWelcome && (
             <div className="flex items-center gap-3 pt-1">
